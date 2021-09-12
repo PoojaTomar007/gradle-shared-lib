@@ -1,7 +1,14 @@
 #!/usr/bin/env groovy
 
-def sout = new StringBuilder(), serr = new StringBuilder()
-def proc = '/opt/gradle/gradle-6.4.1/bin/gradle -v'.execute()
-proc.consumeProcessOutput(sout, serr)
-proc.waitForOrKill(1000)
-println "out> $sout\nerr> $serr"
+def cmd = ['/bin/sh',  '-c',  '/opt/gradle/gradle-6.4.1/bin/gradle -v']
+
+cmd.execute().with{
+    def output = new StringWriter()
+    def error = new StringWriter()
+    //wait for process ended and catch stderr and stdout.
+    it.waitForProcessOutput(output, error)
+    //check there is no error
+    println "error=$error"
+    println "output=$output"
+    println "code=${it.exitValue()}"
+}
